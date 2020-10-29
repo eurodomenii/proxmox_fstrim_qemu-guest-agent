@@ -1,0 +1,1 @@
+# proxmox_fstrim_qemu-guest-agent
