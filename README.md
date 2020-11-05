@@ -4,6 +4,7 @@ However, discard=on must be setup in KVM storage configuration at /etc/pve/qemu-
 
 Default mode is sending mail to Linux root when QEMU guest agent is running, or on another execution error
 > cat /etc/crontab
+
 > */30 *  * * *   root   /var/eurodomenii/scripts/github/proxmox_fstrim_qemu-guest-agent/fstrim_via_guest-agent.pl >/dev/null 2>&1
 
 
