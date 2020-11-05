@@ -26,7 +26,7 @@ foreach my $i (@vmids) {
 	    #Test this by running in VM systemctl stop qemu-guest-agent.service
 	    $message .= "QEMU guest agent is not running for VM $i on node $node\n";
 	} elsif (index($fstrim_exec, "0") != -1) {
-	    $message .= "Even QEMU guest agent is runnning, there's a execution error of fstrim command for VM $i on node $node\n";
+	    $message .= "Even QEMU guest agent is running, there's an execution error of fstrim command for VM $i on node $node\n";
         }
     }
 }
