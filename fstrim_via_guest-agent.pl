@@ -16,6 +16,9 @@ my $message = "";
 
 foreach my $i (@vmids) {
     chomp $i;
+    my $status = `qm status $i`;
+    chomp $status;
+    next if $status ne "status: running"; 
     if ($mode eq "print") {
 	$fstrim_exec = `qm guest exec $i fstrim -- "-av"`;
 	print "Fstrim results for $i VM \n $fstrim_exec \n";
@@ -31,7 +34,7 @@ foreach my $i (@vmids) {
     }
 }
 
-if ($mode eq "mail") {
+if ($mode eq "mail" && $message ne "") {
     my $to = "root";
     my $fullhostname = `hostname -f`;
     $fullhostname =~ s/^\s+|\s+$//g ;
