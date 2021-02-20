@@ -12,6 +12,7 @@ chomp $node;
 my @vmids = `pvesh get /nodes/$node/qemu/ --output-format json-pretty | jq -r '.[] | .vmid'`;
 
 my $fstrim_exec = "";
+my $fstrim_exec_filtered = "";
 my $message = "";
 
 foreach my $i (@vmids) {
@@ -22,14 +23,17 @@ foreach my $i (@vmids) {
     if ($mode eq "print") {
 	$fstrim_exec = `qm guest exec $i fstrim -- "-av"`;
 	print "Fstrim results for $i VM \n $fstrim_exec \n";
-    } else {	
-        $fstrim_exec = `qm guest exec $i fstrim -- "-av" | awk -F":" '/exited/{print \$2}'`;
-        if ($fstrim_exec eq "") {
-	   #This error code means QEMU guest agent is not running
+    } else {
+	$fstrim_exec = `qm guest exec $i fstrim -- "-av"`;	
+	$fstrim_exec_filtered = `qm guest exec $i fstrim -- "-av" | awk -F":" '/exited/{print \$2}'`;
+	if ($fstrim_exec_filtered eq "") {
+	    #This error code means QEMU guest agent is not running
 	    #Test this by running in VM systemctl stop qemu-guest-agent.service
 	    $message .= "QEMU guest agent is not running for VM $i on node $node\n";
-	} elsif (index($fstrim_exec, "0") != -1) {
+	    $message .= "Raw error message: \n $fstrim_exec \n";
+	} elsif (index($fstrim_exec_filtered, "0") != -1) {
 	    $message .= "Even QEMU guest agent is running, there's an execution error of fstrim command for VM $i on node $node\n";
+	    $message .= "Raw error message: \n $fstrim_exec \n";
         }
     }
 }
